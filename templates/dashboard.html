@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-4">Sign Language Recognition</h1>
+            <p class="lead">Upload an image or use your camera to recognize Indian Sign Language gestures.</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link active" id="upload-tab" href="#">Image Upload</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="camera-tab" href="#">Use Camera</a>
+                </li>
+            </ul>
+            
+            <!-- Upload Interface -->
+            <div id="upload-interface">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div id="upload-area" class="upload-area mb-4">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h4>Drag & Drop or Click to Upload</h4>
+                        <p class="text-muted mb-0">Supported formats: JPG, PNG, GIF</p>
+                        <input type="file" id="file-input" name="file" accept="image/*" class="d-none">
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" onclick="document.getElementById('file-input').click()">Select Image</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Camera Interface -->
+            <div id="camera-interface" style="display: none;">
+                <div class="text-center mb-4">
+                    <video id="camera-preview" class="camera-preview" autoplay playsinline></video>
+                    <div class="mt-3">
+                        <button id="camera-button" class="btn btn-primary">
+                            <i class="fas fa-camera me-2"></i>Start Camera
+                        </button>
+                        <button id="capture-button" class="btn btn-success" style="display: none;">
+                            <i class="fas fa-camera me-2"></i>Capture
+                        </button>
+                        <button id="close-camera" class="btn btn-outline-secondary ms-2" style="display: none;">
+                            <i class="fas fa-times me-2"></i>Close Camera
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prediction Results -->
+            <div id="prediction-card" class="prediction-card mt-4">
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <img id="result-image" class="img-fluid rounded" style="max-height: 300px; display: none;" alt="Uploaded sign">
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="mb-3">Prediction Result</h3>
+                        <div class="result-letter" id="result-letter">A</div>
+                        <p class="mb-2">Confidence:</p>
+                        <div class="confidence-bar mb-2">
+                            <div id="confidence-progress" class="confidence-progress" style="width: 85%"></div>
+                        </div>
+                        <p id="confidence-text" class="text-end mb-4">85%</p>
+                        <p class="mb-0 text-muted"><small>Predictions are made using a deep learning model trained on Indian Sign Language dataset.</small></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="upload-spinner" class="text-center mt-4" style="display: none;">
+                <div class="spinner mx-auto"></div>
+                <p class="mt-3">Processing image...</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Predictions</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if predictions %}
+                    <ul class="list-group list-group-flush">
+                        {% for prediction in predictions %}
+                        <li class="list-group-item d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img src="{{ url_for('static', filename='uploads/' + prediction.filename) }}" class="history-thumbnail" alt="Prediction">
+                            </div>
+                            <div class="ms-3">
+                                <div class="fw-bold">{{ prediction.predicted_class }}</div>
+                                <small class="text-muted">
+                                    {{ prediction.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                    <span class="badge bg-primary badge-confidence">{{ (prediction.confidence * 100)|round(2) }}%</span>
+                                </small>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="p-4 text-center">
+                        <p class="text-muted">No predictions yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary">View All History</a>
+                </div>
+            </div>
+            
+            <!-- Tips Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Tips for Better Recognition</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Ensure good lighting on your hands</li>
+                        <li>Use a plain background if possible</li>
+                        <li>Keep your hand centered in the image</li>
+                        <li>For best results, avoid blurry images</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+{% endblock %}

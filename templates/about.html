@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<section class="about-header py-5 text-center bg-light">
+    <div class="container">
+        <h1 class="display-4 fw-bold">About Us</h1>
+        <p class="lead">Meet the team behind the Indian Sign Language Recognition project</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Our Mission</h2>
+                <p>At ISL Recognition, we are committed to breaking down communication barriers between the deaf community and the hearing world. Our mission is to leverage artificial intelligence and computer vision to create accessible tools that facilitate seamless communication.</p>
+                <p>With over 70 million people in India using sign language, our goal is to make everyday interactions more inclusive and accessible for everyone.</p>
+            </div>
+            <div class="col-lg-6">
+                <h2 class="mb-4">Project Overview</h2>
+                <p>Our Indian Sign Language Recognition system uses deep learning to translate sign language gestures into text. The technology is built on a powerful LSTM neural network architecture, trained on a comprehensive dataset of Indian Sign Language gestures.</p>
+                <p>The system can recognize alphabets, numbers, and common words, providing real-time translations with high accuracy.</p>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-5">Meet Our Team</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://via.placeholder.com/150" alt="Pavan Kalyan" class="rounded-circle mb-3" width="150" height="150">
+                        <h4>Pavan Kalyan</h4>
+                        <p class="text-muted">AI Model Development</p>
+                        <p>Led the development and training of the deep learning model, implementing the LSTM architecture for accurate sign language recognition.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://via.placeholder.com/150" alt="Nithya" class="rounded-circle mb-3" width="150" height="150">
+                        <h4>Nithya</h4>
+                        <p class="text-muted">Data Science & Training</p>
+                        <p>Responsible for dataset collection, preprocessing, and model training optimization to achieve high accuracy in sign recognition.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://via.placeholder.com/150" alt="Shiva Pallavi" class="rounded-circle mb-3" width="150" height="150">
+                        <h4>Shiva Pallavi</h4>
+                        <p class="text-muted">Backend Development</p>
+                        <p>Developed the web application backend and user authentication system for a seamless user experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Technology Stack</h2>
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <i class="fab fa-python fa-3x text-primary mb-3"></i>
+                    <h5>Python</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                    <h5>TensorFlow</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <i class="fas fa-flask fa-3x text-primary mb-3"></i>
+                    <h5>Flask</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <i class="fas fa-database fa-3x text-primary mb-3"></i>
+                    <h5>SQLAlchemy</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+<section class="hero-section py-5 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold mb-4">Indian Sign Language Recognition</h1>
+                <p class="lead mb-4">Empowering communication through AI-powered sign language translation technology.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4">Get Started</a>
+                        <a href="{{ url_for('signup') }}" class="btn btn-outline-primary btn-lg px-4">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="upload-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Try It Now</h2>
+        <p class="text-center mb-4">Upload a sequence of sign images (A-Z) and get the translated word.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" class="p-4 bg-white shadow rounded">
+                    <div class="mb-3">
+                        <label for="files" class="form-label">Upload Sign Images in Order</label>
+                        <input type="file" class="form-control" name="files" id="files" multiple required>
+                        <small class="form-text text-muted">Upload images in the correct sequence (e.g., for "HELLO", upload images for H, E, L, L, O).</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Predict Word</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mb-3">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h5 class="card-title">Upload Image</h5>
+                        <p class="card-text">Upload an image or use your camera to capture sign language gestures.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mb-3">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5 class="card-title">AI Processing</h5>
+                        <p class="card-text">Our deep learning model processes the image to recognize the sign.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mb-3">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h5 class="card-title">Text Translation</h5>
+                        <p class="card-text">Get accurate text translations of the sign language gestures instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-description py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">About the Project</h2>
+                <p class="lead">Our Indian Sign Language (ISL) Recognition project uses deep learning technology to bridge communication gaps between the deaf community and others.</p>
+                <p>The system leverages a powerful LSTM-based neural network trained on a comprehensive dataset of Indian Sign Language gestures. The model can accurately recognize alphabets, numbers, and common words, providing real-time translations.</p>
+                <p>This technology aims to promote inclusivity and make communication more accessible for everyone, regardless of hearing ability.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-outline-primary mt-3">Learn More</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://via.placeholder.com/600x400" alt="ISL Recognition Demonstration" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 5rem 0;
+        margin-top: -1.5rem;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto;
+    }
+
+    .upload-section input[type="file"] {
+        border: 2px dashed #ccc;
+        padding: 1rem;
+    }
+</style>
+{% endblock %}

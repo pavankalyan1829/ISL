@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}Real-time Prediction - Sign Language Recognition{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">Real-time Sign Language Recognition</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-4" id="recognitionTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-tab-pane" 
+                                   type="button" role="tab" aria-controls="image-tab-pane" aria-selected="true">
+                                <i class="fas fa-image me-2"></i>Image Recognition
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video-tab-pane" 
+                                   type="button" role="tab" aria-controls="video-tab-pane" aria-selected="false">
+                                <i class="fas fa-video me-2"></i>Video Recognition
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="webcam-tab" data-bs-toggle="tab" data-bs-target="#webcam-tab-pane" 
+                                   type="button" role="tab" aria-controls="webcam-tab-pane" aria-selected="false">
+                                <i class="fas fa-camera me-2"></i>Webcam Recognition
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="recognitionTabContent">
+                        <!-- Image Upload Tab -->
+                        <div class="tab-pane fade show active" id="image-tab-pane" role="tabpanel" aria-labelledby="image-tab" tabindex="0">
+                            <form action="{{ url_for('predict_image') }}" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">Upload Sign Language Image</label>
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-language me-2"></i>Translate Sign
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Video Upload Tab -->
+                        <div class="tab-pane fade" id="video-tab-pane" role="tabpanel" aria-labelledby="video-tab" tabindex="0">
+                            <form action="{{ url_for('predict_video') }}" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="video" class="form-label">Upload Sign Language Video</label>
+                                    <input type="file" class="form-control" id="video" name="video" accept="video/*" required>
+                                    <div class="form-text">Maximum video length: 30 seconds. Supported formats: MP4, MOV, AVI.</div>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-sign-language me-2"></i>Process Video
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Webcam Tab -->
+                        <div class="tab-pane fade" id="webcam-tab-pane" role="tabpanel" aria-labelledby="webcam-tab" tabindex="0">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <video id="webcam" class="rounded" autoplay playsinline width="100%" height="auto"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-light">
+                                            <h5 class="card-title mb-0">Controls</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-grid gap-2">
+                                                <button id="startButton" class="btn btn-success mb-2">
+                                                    <i class="fas fa-play me-2"></i>Start Webcam
+                                                </button>
+                                                <button id="captureButton" class="btn btn-primary mb-2" disabled>
+                                                    <i class="fas fa-camera me-2"></i>Capture Sign
+                                                </button>
+                                                <button id="stopButton" class="btn btn-danger" disabled>
+                                                    <i class="fas fa-stop me-2"></i>Stop Webcam
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5 class="card-title mb-0">Recognition Result</h5>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div id="resultContainer">
+                                                <div class="placeholder-glow">
+                                                    <span>No sign detected yet</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Result Display Section -->
+                    {% if prediction_result %}
+                    <div class="card mt-4 border-success">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="h5 mb-0">Recognition Result</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% if image_filename %}
+                                    <div class="text-center mb-3">
+                                        <img src="{{ url_for('static', filename='uploads/' + image_filename) }}" 
+                                             alt="Uploaded Sign" class="img-fluid rounded" style="max-height: 300px;">
+                                    </div>
+                                    {% elif video_filename %}
+                                    <div class="text-center mb-3">
+                                        <video controls class="img-fluid rounded" style="max-height: 300px;">
+                                            <source src="{{ url_for('static', filename='uploads/' + video_filename) }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <div class="text-center">
+                                            <h4 class="mb-3">Detected Sign:</h4>
+                                            <div class="display-1 fw-bold text-primary">{{ prediction_result }}</div>
+                                            <div class="mt-2 text-muted">Confidence: {{ confidence }}%</div>
+                                            
+                                            {% if video_predictions %}
+                                            <div class="mt-4">
+                                                <h5>Full Translation:</h5>
+                                                <p class="lead">{{ " ".join(video_predictions) }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('webcam');
+        const startButton = document.getElementById('startButton');
+        const captureButton = document.getElementById('captureButton');
+        const stopButton = document.getElementById('stopButton');
+        const resultContainer = document.getElementById('resultContainer');
+        
+        let stream = null;
+        
+        // Start webcam
+        startButton.addEventListener('click', async function() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    } 
+                });
+                video.srcObject = stream;
+                
+                startButton.disabled = true;
+                captureButton.disabled = false;
+                stopButton.disabled = false;
+                
+            } catch (err) {
+                console.error("Error accessing webcam:", err);
+                alert("Could not access webcam. Please ensure you've granted permission.");
+            }
+        });
+        
+        // Capture image
+        captureButton.addEventListener('click', function() {
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw the current video frame on the canvas
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert the canvas to blob
+            canvas.toBlob(function(blob) {
+                const formData = new FormData();
+                formData.append('image', blob, 'webcam-capture.jpg');
+                
+                // Set loading state
+                resultContainer.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+                
+                // Send to server
+                fetch('/predict_webcam', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the result
+                    resultContainer.innerHTML = `
+                        <h1 class="display-4 text-primary">${data.prediction}</h1>
+                        <p class="text-muted">Confidence: ${data.confidence}%</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultContainer.innerHTML = '<div class="alert alert-danger">Error processing image</div>';
+                });
+            }, 'image/jpeg', 0.95);
+        });
+        
+        // Stop webcam
+        stopButton.addEventListener('click', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                
+                startButton.disabled = false;
+                captureButton.disabled = true;
+                stopButton.disabled = true;
+            }
+        });
+    });
+</script>
+{% endblock %}
